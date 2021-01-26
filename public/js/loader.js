@@ -12,4 +12,10 @@ export function loadImage(url){
         image.src=url;
     });
 
+};
+
+//making loader for levels
+export function loadLevel(levelName){
+    return fetch(`/levels/${levelName}.json`)
+                .then(response=>response.json());
 }
