@@ -7,26 +7,29 @@ export default class Spritesheet{
         //making new object 
         this.tiles=new Map();
     }
-    define(name,x,y){
+    define(name,x,y,width,height){
         //creating new canvas
         const buffer = document.createElement('canvas');
-        buffer.height = this.height;
-        buffer.width = this.width;
+        buffer.height = height;
+        buffer.width = width;
         buffer
             .getContext('2d')
             .drawImage(
                 this.image,
-                this.width * x,
-                this.height * y,
-                this.width,
-                this.height,
+                width ,
+                height,
+                width,
+                height,
                 0,
                 0,
-                this.width,
-                this.height);
+                width,
+                height);
                 //adding key and value to tiles object
         this.tiles.set(name, buffer);
     }
+    defineTile(name,x,y){   
+        this.define(name,x*this.width,y*this.height,this.width,this.height);
+    }    
     draw(name,context,x,y){
         //getting canvas with image from tiles objext
         const buffer = this.tiles.get(name);

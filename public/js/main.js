@@ -14,22 +14,37 @@ function drawBackground(background,context,sprites){
         }
     });
 }
-loadImage('/images/tiles.png')
+function loadBackgroundSprites(){
+    return loadImage('/images/tiles.png')
     .then(image=>{
         //make new spritesheet
         const sprites= new Spritesheet(image,16,16);
         //define type of sky sprite
         sprites.define('ground',0,0);
         sprites.define('sky',3,23);
-        console.log(sprites)
-        loadLevel('1-1')
-        //after json is loaded
-                .then(level=>{
-                    //looping through background array
-                    level.background.forEach((background)=>{
-                        //calling function and passing range fom background array
-                        drawBackground(background,ctx,sprites)
-                    })
-                    
-        });
-});
+        return sprites;
+    });
+}
+function loadMarioSprites(){
+    return loadImage('/images/characters.gif')
+    .then(image=>{
+        //make new spritesheet
+        const sprites= new Spritesheet(image,16,16);
+        //define type of sky sprite
+        sprites.define('idle',16,3);
+        return sprites;
+    });
+}
+Promise.all([
+    loadBackgroundSprites(),
+    loadMarioSprites(),
+    loadLevel('1-1')])
+            .then(([sprites,mario,level])=>{
+                //looping through background array
+                level.background.forEach((background)=>{
+                    //calling function and passing range fom background array
+                    drawBackground(background,ctx,sprites)
+                });
+                mario.draw('idle',ctx,0,0);
+            });      
+
