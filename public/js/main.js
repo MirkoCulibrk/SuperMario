@@ -1,50 +1,38 @@
-import Spritesheet  from "./SpriteSheet.js";
-import {loadImage,loadLevel} from './loader.js';
+
+import Compositor from './Compositor.js';
+import {loadLevel} from './loader.js';
+import {loadBackgroundSprites,loadMarioSprites} from './sprites.js';
+import {createBackgroundLayer,createSpriteLayer} from './layers.js';
 const canvas=document.getElementById('screen');
 const ctx=canvas.getContext('2d');
-function drawBackground(background,context,sprites){
-    background.ranges.forEach(([x1,x2,y1,y2]) => {
-        //loop to draw row
-        for(let x=x1;x<x2;++x){
-            //loop to move to next row
-            for(let y=y1;y<y2;++y){
-                sprites.drawTiles(background.tile,context,x,y);
-            }
-            
-        }
-    });
-}
-function loadBackgroundSprites(){
-    return loadImage('/images/tiles.png')
-    .then(image=>{
-        //make new spritesheet
-        const sprites= new Spritesheet(image,16,16);
-        //define type of sky sprite
-        sprites.define('ground',0,0);
-        sprites.define('sky',3,23);
-        return sprites;
-    });
-}
-function loadMarioSprites(){
-    return loadImage('/images/characters.gif')
-    .then(image=>{
-        //make new spritesheet
-        const sprites= new Spritesheet(image,16,16);
-        //define type of sky sprite
-        sprites.define('idle',16,3);
-        return sprites;
-    });
-}
+//Promises wchich need to be loaded pararelly
 Promise.all([
     loadBackgroundSprites(),
     loadMarioSprites(),
     loadLevel('1-1')])
-            .then(([sprites,mario,level])=>{
-                //looping through background array
-                level.background.forEach((background)=>{
-                    //calling function and passing range fom background array
-                    drawBackground(background,ctx,sprites)
-                });
-                mario.draw('idle',ctx,0,0);
-            });      
+    //making array of returned image from promise
+            .then(([backgroundSprites,mario,level])=>{
+                //making comp to colect all the layer=(all of the sprites)
+                const comp=new Compositor();
+                //making background layer
+                const backgroundLayer=createBackgroundLayer(level,backgroundSprites);
+                comp.layers.push(backgroundLayer);
+                //postion for mario on screen
+                const position={
+                    x:64,
+                    y:64
+                }
+                const spriteLayer=createSpriteLayer(mario,position);
+                comp.layers.push(spriteLayer);
+                function update(){
+                    //updating background on canvas
+                    comp.draw(ctx);
+                    //increse position of marion on screen
+                    position.x+=2;
+                    position.y+=2;
+                    //updating animation for every frame
+                    requestAnimationFrame(update);
+                }
+                update();
+});      
 

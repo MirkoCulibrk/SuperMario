@@ -16,8 +16,8 @@ export default class Spritesheet{
             .getContext('2d')
             .drawImage(
                 this.image,
-                width ,
-                height,
+                x ,
+                y,
                 width,
                 height,
                 0,
@@ -28,6 +28,7 @@ export default class Spritesheet{
         this.tiles.set(name, buffer);
     }
     defineTile(name,x,y){   
+        //calling define 
         this.define(name,x*this.width,y*this.height,this.width,this.height);
     }    
     draw(name,context,x,y){
