@@ -8,6 +8,7 @@ export function loadImage(url){
             //return promise object with image value
             resolve(image);
         });
+        console.log(image)
         //after promise is resolved put src to url argument
         image.src=url;
     });

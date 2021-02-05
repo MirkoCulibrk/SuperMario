@@ -13,9 +13,9 @@ export function createBackgroundLayer(backgrounds,sprites){
         context.drawImage(buffer,0,0);
     }
 }
-export function createSpriteLayer(sprite,position){
+export function createSpriteLayer(entety){
     return function drawSpritesLayer(context){
-        sprite.draw('idle',context,position.x,position.y);
+        entety.draw(context);
     }
 }
 function drawBackground(background,context,sprites){
